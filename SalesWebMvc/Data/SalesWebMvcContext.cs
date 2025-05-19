@@ -1,14 +1,28 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SalesWebMvc.Models;
 
-namespace SalesWebMvc.Data
+namespace SalesWebMvc.Data;
+
+public class SalesWebMvcContext : DbContext
 {
-    public class SalesWebMvcContext : DbContext
-    {
-        public SalesWebMvcContext (DbContextOptions<SalesWebMvcContext> options)
-            : base(options)
-        {
-        }
+    private readonly IConfiguration _configuration;
 
-        public DbSet<SalesWebMvc.Models.Department> Department { get; set; } = default!;
+    public DbSet<Department> Departments { get; set; } = default!;
+
+    public SalesWebMvcContext(DbContextOptions<SalesWebMvcContext> options, IConfiguration configuration)
+        : base(options)
+    {
+        _configuration = configuration;
     }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        //IConfigurationRoot configuration = new ConfigurationBuilder()
+        //    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+        //    .AddJsonFile("appsettings.json")
+        //    .Build();
+
+        optionsBuilder.UseSqlServer(_configuration.GetConnectionString("SalesWebMvcContext") ?? throw new InvalidOperationException("Connection string 'SalesWebMvcContext' not found."));
+    }
+
 }

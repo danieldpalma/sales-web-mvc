@@ -1,10 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SalesWebMvc.Data;
+﻿using SalesWebMvc.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<SalesWebMvcContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SalesWebMvcContext") ?? throw new InvalidOperationException("Connection string 'SalesWebMvcContext' not found.")));
+builder.Services.AddDbContext<SalesWebMvcContext>();
 
 builder.Services.AddControllersWithViews();
 
