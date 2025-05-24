@@ -22,4 +22,12 @@ public class SalesRecord
         Status = status;
         Seller = seller;
     }
+
+    public SalesRecord(DateTime date, double amount, SaleStatus status, Seller seller)
+    {
+        Date = date;
+        Amount = amount;
+        Status = status;
+        Seller = seller;
+    }
 }

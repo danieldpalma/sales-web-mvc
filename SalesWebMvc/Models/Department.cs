@@ -16,6 +16,11 @@ public class Department
         Name = name;
     }
 
+    public Department(string name)
+    {
+        Name = name;
+    }
+
     public void AddSeler(Seller seller) => Sellers.Add(seller);
 
     public double TotalSales(DateTime inital, DateTime final) => Sellers.Sum(seller => seller.TotalSales(inital, final));
