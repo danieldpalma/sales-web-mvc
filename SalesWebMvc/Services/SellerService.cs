@@ -14,26 +14,32 @@ public class SellerService
         _context = context;
     }
 
-    public List<Seller> FindAll() => _context.Sellers.ToList();
+    public async Task<List<Seller>> FindAllAsync() => await _context.Sellers.ToListAsync();
 
-    public Seller FindById(int id) => _context.Sellers.Include(x => x.Department).FirstOrDefault(x => x.Id == id);
+    public async Task<Seller> FindByIdAsync(int id)
+    {
+        return await _context.Sellers
+            .Include(x => x.Department)
+            .FirstOrDefaultAsync(x => x.Id == id) ?? throw new NotFoundException("Id not found.");
+    }
 
-    public void Insert(Seller obj)
+    public async Task InsertAsync(Seller obj)
     {
         _context.Add(obj);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
-    public void Remove(int id)
+    public async Task RemoveAsync(int id)
     {
-        var obj = _context.Sellers.Find(id);
+        var obj = _context.Sellers.Find(id) ?? throw new NotFoundException("Id not found.");
         _context.Sellers.Remove(obj);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
-    public void Update(Seller seller)
+    public async Task UpdateAsync(Seller seller)
     {
-        if (!_context.Sellers.Any(x => x.Id == seller.Id))
+        bool hasAny = await _context.Sellers.AnyAsync(x => x.Id == seller.Id);
+        if (!hasAny)
         {
             throw new NotFoundException("Id not found.");
         }
@@ -41,7 +47,7 @@ public class SellerService
         try
         {
             _context.Update(seller);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException ex)
         {
