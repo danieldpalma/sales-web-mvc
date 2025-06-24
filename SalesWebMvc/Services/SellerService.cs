@@ -31,9 +31,19 @@ public class SellerService
 
     public async Task RemoveAsync(int id)
     {
-        var obj = _context.Sellers.Find(id) ?? throw new NotFoundException("Id not found.");
-        _context.Sellers.Remove(obj);
-        await _context.SaveChangesAsync();
+        try
+        {
+            var obj = _context.Sellers.Find(id);
+            _context.Sellers.Remove(obj!);
+            await _context.SaveChangesAsync();
+        } catch (NotFoundException)
+        {
+            throw new NotFoundException("Id not found.");
+        }
+        catch (DbUpdateException)
+        {
+            throw new IntegrityException("Can't delete seller because he/she has sales.");
+        }
     }
 
     public async Task UpdateAsync(Seller seller)
